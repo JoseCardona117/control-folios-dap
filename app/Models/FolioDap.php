@@ -19,4 +19,24 @@ class FolioDap extends Model
         'fecha',
         'archivo'
     ];
+
+    //Relacion con Secciones
+    public function seccion()
+    {
+        return $this->belongsTo(
+            SeccionDap::class,
+            'id_seccion',
+            'id_seccion'
+        );
+    }
+
+    //Relación con usuarios
+    public function responsableUsuario()
+    {
+        return $this->belongsTo(
+            User::class,    
+            'responsable',  //FK en folios_dap
+            'id_uaa'        //PK alternativa
+        );
+    }
 }
