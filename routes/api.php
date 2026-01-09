@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SeccionDapController;
 use App\Http\Controllers\Api\FolioController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -25,6 +26,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/folios/{folio}/descargar', [FolioController::class, 'descargarArchivoFolio']);
 });
 Route::middleware('auth:sanctum')->get('obtenerfolios', [FolioController::class, 'obtenerFolios']);
+
+//Rutas de Usuarios
+Route::middleware('auth:sanctum')->get('obtenerUsuarios', [UserController::class, 'obtenerUsuarios']);
 
 //Rutas de Loging
 Route::post('/login', [AuthController::class, 'login']);

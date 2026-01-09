@@ -17,10 +17,11 @@ class FolioController extends Controller
     public function store(Request $request) //Crear Folios Nuevos
     {
         $request->validate([
+            'responsable' => 'required|integer',
             'id_seccion' => 'required|integer',
             'asunto' => 'required|string',
             'dirigido' => 'required|string',
-            'fecha' => 'required|date_format:d-m-Y',
+            //'fecha' => 'required|date_format:d-m-Y',
         ]);
 
         $user = auth::user();
@@ -47,13 +48,17 @@ class FolioController extends Controller
         $codigoSeccion = ($seccionCodes == '') ? '' : '-'.$seccionCodes;
         $codigoFolio = "DGIP-DAP{$codigoSeccion}-{$year}-{$nextFolio}";
 
+        //Fecha generada auto con hoy
+        $fecha = Carbon::now()->format('Y-m-d');
+
         $folio = FolioDap::create([
             'folio' => $codigoFolio,
             'id_seccion' => $request->id_seccion,
-            'responsable' => $user->id_uaa,
+            'responsable' => $request->id_uaa,
             'asunto' => $request->asunto,
             'dirigido' => $request->dirigido,
-            'fecha' => Carbon::createFromFormat('d-m-Y', $request->fecha),//->format('Y-m-d'),
+            //'fecha' => Carbon::createFromFormat('d-m-Y', $request->fecha),//->format('Y-m-d'),
+            'fecha' => $fecha,//->format('Y-m-d'),
             'archivo' => null,
         ]);
 
