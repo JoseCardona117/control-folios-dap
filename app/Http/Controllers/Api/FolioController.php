@@ -54,7 +54,7 @@ class FolioController extends Controller
         $folio = FolioDap::create([
             'folio' => $codigoFolio,
             'id_seccion' => $request->id_seccion,
-            'responsable' => $request->id_uaa,
+            'responsable' => $request->responsable,
             'asunto' => $request->asunto,
             'dirigido' => $request->dirigido,
             //'fecha' => Carbon::createFromFormat('d-m-Y', $request->fecha),//->format('Y-m-d'),

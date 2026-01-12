@@ -29,6 +29,9 @@ Route::middleware('auth:sanctum')->get('obtenerfolios', [FolioController::class,
 
 //Rutas de Usuarios
 Route::middleware('auth:sanctum')->get('obtenerUsuarios', [UserController::class, 'obtenerUsuarios']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('creaUsuario', [UserController::class, 'creaUsuario']);
+});
 
 //Rutas de Loging
 Route::post('/login', [AuthController::class, 'login']);
