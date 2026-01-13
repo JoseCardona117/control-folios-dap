@@ -32,12 +32,13 @@ class UserController extends Controller
             'password' =>'required|string|min:8'
         ]);
 
+        $passwordTrim = trim($request->password);
         $user = User::create([
             'name'  => $request->name,
             'email' => $request->email,
             'id_uaa' => $request->id_uaa,
             'seccion' => $request->seccion,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($passwordTrim),
         ]); 
 
         return response()->json([

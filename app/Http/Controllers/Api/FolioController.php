@@ -62,9 +62,21 @@ class FolioController extends Controller
             'archivo' => null,
         ]);
 
+        $folio->load(['responsableUsuario', 'seccion']);
+
         return response()->json([
             'message' => 'Folio creado exitosamente',
-            'folio' => $folio
+            'folio' => [
+                'id' => $folio->id,
+                'folio' => $folio->folio,
+                'seccion' => $folio->seccion->nombre,
+                'responsable' => $folio->responsable,
+                'nombre_responsable' => $folio->responsableUsuario->name,
+                'asunto' => $folio->asunto,
+                'dirigido' => $folio->dirigido,
+                'fecha' => Carbon::parse($folio->fecha)->format('Y-m-d'),
+                'archivo' => $folio->archivo ? $folio->archivo : null
+            ]
         ], 201);
     }
 
@@ -79,10 +91,11 @@ class FolioController extends Controller
                 'id' => $folio->id,
                 'folio' => $folio->folio,
                 'seccion' => $folio->seccion?->nombre,
-                'responsable' => $folio->responsableUsuario?->name,
+                'responsable' => $folio->responsable,
+                'nombre_responsable' => $folio->responsableUsuario?->name,
                 'asunto' => $folio->asunto,
                 'dirigido' => $folio->dirigido,
-                'fecha' => Carbon::parse($folio->fecha)->format('d-m-y'),
+                'fecha' => Carbon::parse($folio->fecha)->format('Y-m-d'),//('d-m-y'),
                 'archivo' => $folio->archivo
             ];
         });
