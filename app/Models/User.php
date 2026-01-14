@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'id_uaa',
         'seccion',
+        'password_default',
     ];
 
     /**
@@ -46,6 +47,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'password_default' => 'boolean',
         ];
     }
 }

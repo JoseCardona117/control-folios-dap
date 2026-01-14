@@ -46,4 +46,31 @@ class UserController extends Controller
             'user'    => $user
         ], 201);
     }
+
+    public function cambiaPassword(Request $request)
+    {
+        $request->validate([
+            'current_password'  => 'required|string',
+            'new_password'      => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = auth()->user();
+
+        $currentPassword = trim($request->current_password);
+        $newPassword = trim($request->new_password);
+
+        if (!Hash::check($currentPassword, $user->password)) {
+            return response()->json([
+                'message' => 'La contraseña actual es incorrecta'
+            ], 422);
+        }
+
+        $user->password = Hash::make($newPassword);
+        $user->password_default = false;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Contraseña actualizada correctamente'
+        ]);
+    }
 }
