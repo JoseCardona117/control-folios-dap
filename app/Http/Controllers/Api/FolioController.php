@@ -46,7 +46,7 @@ class FolioController extends Controller
             4 => 'SEC',
         };
         $codigoSeccion = ($seccionCodes == '') ? '' : '-'.$seccionCodes;
-        $codigoFolio = "DGIP-DAP{$codigoSeccion}-{$year}-{$nextFolio}";
+        $codigoFolio = "DGIP-DAP-{$year}-{$nextFolio}";
 
         //Fecha generada auto con hoy
         $fecha = Carbon::now()->format('Y-m-d');
