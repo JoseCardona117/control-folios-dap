@@ -12,29 +12,44 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('folio_sequences', function (Blueprint $table) {
+        // 1️⃣ Eliminar índice solo si existe
+        $indexExists = DB::select("
+            SELECT 1
+            FROM information_schema.statistics
+            WHERE table_schema = DATABASE()
+            AND table_name = 'folio_sequences'
+            AND index_name = 'folio_sequences_year_id_seccion_unique'
+            LIMIT 1
+        ");
 
-            // 🔒 Eliminar índice compuesto si existe
-            try {
-                $table->dropUnique(['year', 'id_seccion']);
-            } catch (\Throwable $e) {
-                // índice no existe, continuar
-            }
+        if (!empty($indexExists)) {
+            Schema::table('folio_sequences', function ($table) {
+                $table->dropUnique('folio_sequences_year_id_seccion_unique');
+            });
+        }
 
-            // ❌ Eliminar columna id_seccion SOLO si existe
-            if (Schema::hasColumn('folio_sequences', 'id_seccion')) {
+        // 2️⃣ Eliminar columna solo si existe
+        if (Schema::hasColumn('folio_sequences', 'id_seccion')) {
+            Schema::table('folio_sequences', function ($table) {
                 $table->dropColumn('id_seccion');
-            }
-        });
+            });
+        }
 
-        // ✅ Crear índice único por year si no existe
-        Schema::table('folio_sequences', function (Blueprint $table) {
-            try {
+        // 3️⃣ Crear índice correcto solo si no existe
+        $yearIndexExists = DB::select("
+            SELECT 1
+            FROM information_schema.statistics
+            WHERE table_schema = DATABASE()
+            AND table_name = 'folio_sequences'
+            AND index_name = 'folio_sequences_year_unique'
+            LIMIT 1
+        ");
+
+        if (empty($yearIndexExists)) {
+            Schema::table('folio_sequences', function ($table) {
                 $table->unique('year');
-            } catch (\Throwable $e) {
-                // índice ya existe
-            }
-        });
+            });
+        }
     }
 
     /**
