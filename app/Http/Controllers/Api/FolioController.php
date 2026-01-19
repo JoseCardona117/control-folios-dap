@@ -10,6 +10,7 @@ use App\Models\FolioDap;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class FolioController extends Controller
@@ -28,39 +29,51 @@ class FolioController extends Controller
 
         $year = Carbon::now()->format('y');
 
-        $lastFolio = FolioDap::where('id_seccion', $request->id_seccion)
-            ->orderBy('id','desc')
-            ->first();
+        $folio = DB::transaction(function () use ($request, $year) {
+            
+            $sequence = DB::table('folio_sequences')
+                ->where('year', $year)
+                //->where('id_seccion', $request->id_seccion)
+                ->lockForUpdate()
+                ->first();
 
-        $nextFolio = 1;
-        if($lastFolio) {
-            $parts = explode('-', $lastFolio->folio);
-            $nextFolio = intval(end($parts)) + 1;
-        }
+            if (!$sequence) {
+                DB::table('folio_sequences')->insert([
+                    'year' => $year,
+                    //'id_seccion' => $request->id_seccion,
+                    'last_number' => 1,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+                $nextNumber = 1;
+            } else {
+                $nextNumber = $sequence->last_number + 1;
 
-        // Mapeo de secciones
-        $seccionCodes = match (intval($request->id_seccion)){
-            1 => '',
-            2 => 'SDC',
-            3 => 'SIC',
-            4 => 'SEC',
-        };
-        $codigoSeccion = ($seccionCodes == '') ? '' : '-'.$seccionCodes;
-        $codigoFolio = "DGIP-DAP-{$year}-{$nextFolio}";
+                DB::table('folio_sequences')
+                    ->where('id', $sequence->id)
+                    ->update([
+                        'last_number' => $nextNumber,
+                        'updated_at' => now(),
+                    ]);
+            }
 
-        //Fecha generada auto con hoy
-        $fecha = Carbon::now()->format('Y-m-d');
+            $codigoFolio = "DGIP-DAP-{$year}-{$nextNumber}";
+    
+            //Fecha generada auto con hoy
+            $fecha = Carbon::now()->format('Y-m-d');
+    
+            return FolioDap::create([
+                'folio' => $codigoFolio,
+                'id_seccion' => $request->id_seccion,
+                'responsable' => $request->responsable,
+                'asunto' => $request->asunto,
+                'dirigido' => $request->dirigido,
+                //'fecha' => Carbon::createFromFormat('d-m-Y', $request->fecha),//->format('Y-m-d'),
+                'fecha' => $fecha,//->format('Y-m-d'),
+                'archivo' => null,
+            ]);
+        });
 
-        $folio = FolioDap::create([
-            'folio' => $codigoFolio,
-            'id_seccion' => $request->id_seccion,
-            'responsable' => $request->responsable,
-            'asunto' => $request->asunto,
-            'dirigido' => $request->dirigido,
-            //'fecha' => Carbon::createFromFormat('d-m-Y', $request->fecha),//->format('Y-m-d'),
-            'fecha' => $fecha,//->format('Y-m-d'),
-            'archivo' => null,
-        ]);
 
         $folio->load(['responsableUsuario', 'seccion']);
 
