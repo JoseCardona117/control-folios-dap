@@ -88,6 +88,7 @@ class FolioController extends Controller
                 'responsable' => $folio->responsable,
                 'nombre_responsable' => $folio->responsableUsuario->name,
                 'asunto' => $folio->asunto,
+                'tipo_asunto' => $folio->tipo_asunto,
                 'dirigido' => $folio->dirigido,
                 'fecha' => Carbon::parse($folio->fecha)->format('Y-m-d'),
                 'archivo' => $folio->archivo ? $folio->archivo : null
@@ -109,6 +110,7 @@ class FolioController extends Controller
                 'responsable' => $folio->responsable,
                 'nombre_responsable' => $folio->responsableUsuario?->name,
                 'asunto' => $folio->asunto,
+                'tipo_asunto' => $folio->tipo_asunto,
                 'dirigido' => $folio->dirigido,
                 'fecha' => Carbon::parse($folio->fecha)->format('Y-m-d'),//('d-m-y'),
                 'archivo' => $folio->archivo

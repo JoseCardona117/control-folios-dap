@@ -15,6 +15,7 @@ class FolioDap extends Model
         'id_seccion',
         'responsable',
         'asunto',
+        'tipo_asunto',
         'dirigido',
         'fecha',
         'archivo'
