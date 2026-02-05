@@ -21,6 +21,7 @@ class FolioController extends Controller
             'responsable' => 'required|integer',
             'id_seccion' => 'required|integer',
             'asunto' => 'required|string',
+            'tipo_asunto' => 'nullable|in:Solicitar,Informar',
             'dirigido' => 'required|string',
             //'fecha' => 'required|date_format:d-m-Y',
         ]);
@@ -67,6 +68,7 @@ class FolioController extends Controller
                 'id_seccion' => $request->id_seccion,
                 'responsable' => $request->responsable,
                 'asunto' => $request->asunto,
+                'tipo_asunto' => $request->tipo_asunto,
                 'dirigido' => $request->dirigido,
                 //'fecha' => Carbon::createFromFormat('d-m-Y', $request->fecha),//->format('Y-m-d'),
                 'fecha' => $fecha,//->format('Y-m-d'),
