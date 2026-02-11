@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\SeccionDapController;
 use App\Http\Controllers\Api\FolioController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\MinutaController;
+use App\Http\Controllers\Api\AcuerdoController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -26,6 +28,25 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/folios/{folio}/descargar', [FolioController::class, 'descargarArchivoFolio']);
 });
 Route::middleware('auth:sanctum')->get('obtenerfolios', [FolioController::class, 'obtenerFolios']);
+
+//Rutas de folios de minutas DAP
+Route::middleware('auth:sanctum')->group(function(){
+    Route::post('/creaminuta', [App\Http\Controllers\Api\MinutaController::class, 'store']);
+    Route::post('/minutas/{minuta}/evidencia', [MinutaController::class, 'subirArchivoMinuta']);
+    // Route::get('/folios/{folio}/descargar', [FolioController::class, 'descargarArchivoFolio']);
+});
+Route::middleware('auth:sanctum')->get('obtenerminutas', [MinutaController::class, 'obtenerMinutas']);
+Route::middleware('auth:sanctum')->get('obtenerminuta/{id}', [MinutaController::class, 'obtenerMinutaInd']);
+
+//Rutas de acuerdos DAP
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/minutas/{minuta}/acuerdos', [AcuerdoController::class, 'obtenerAcuerdos']);
+    Route::post('/minutas/{minuta}/creaAcuerdo', [AcuerdoController::class, 'store']);
+
+    Route::get('/acuerdos/{acuerdo}', [AcuerdoController::class, 'obtenerAcuerdoInd']);
+    Route::put('/acuerdos/{acuerdo}', [AcuerdoController::class, 'actualizaAcuerdo']);
+    Route::delete('/acuerdos/{acuerdo}', [AcuerdoController::class, 'borrarAcuerdo']);
+});
 
 //Rutas de Usuarios
 Route::middleware('auth:sanctum')->get('obtenerUsuarios', [UserController::class, 'obtenerUsuarios']);
