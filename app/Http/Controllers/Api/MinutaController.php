@@ -81,7 +81,8 @@ class MinutaController extends Controller
     }
 
     public function obtenerMinutas() { //Traer todas las minutas
-        $minutas = MinutaDap::orderBy('folio', 'desc')
+        $minutas = MinutaDap::with('acuerdos:id,minuta_id,description,responsable')
+            ->orderBy('folio', 'desc')
             ->get();
 
         return response()->json([
@@ -125,6 +126,22 @@ class MinutaController extends Controller
             'message' => 'Archivo subido correctamente',
             'archivo' => $path,
             'url' => asset('storage/' . $path)
+        ]);
+    }
+
+    public function actualizarObservacionesMinuta(Request $request, MinutaDap $minuta)
+    {
+        $request->validate([
+            'observaciones' => 'required|string'
+        ]);
+
+        $minuta->update([
+            'observaciones' => $request->observaciones
+        ]);
+
+        return response()->json([
+            'message' => 'Observaciones actualizadas correctamente',
+            'minuta' => $minuta
         ]);
     }
 }

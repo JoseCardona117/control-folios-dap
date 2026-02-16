@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->get('obtenerfolios', [FolioController::class,
 Route::middleware('auth:sanctum')->group(function(){
     Route::post('/creaminuta', [App\Http\Controllers\Api\MinutaController::class, 'store']);
     Route::post('/minutas/{minuta}/evidencia', [MinutaController::class, 'subirArchivoMinuta']);
+    Route::put('/minutas/{minuta}/observaciones', [MinutaController::class, 'actualizarObservacionesMinuta']);
     // Route::get('/folios/{folio}/descargar', [FolioController::class, 'descargarArchivoFolio']);
 });
 Route::middleware('auth:sanctum')->get('obtenerminutas', [MinutaController::class, 'obtenerMinutas']);
@@ -44,7 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/minutas/{minuta}/creaAcuerdo', [AcuerdoController::class, 'store']);
 
     Route::get('/acuerdos/{acuerdo}', [AcuerdoController::class, 'obtenerAcuerdoInd']);
-    Route::put('/acuerdos/{acuerdo}', [AcuerdoController::class, 'actualizaAcuerdo']);
+    Route::put('/acuerdos/{acuerdo}', [AcuerdoController::class, 'actualizarAcuerdo']);
     Route::delete('/acuerdos/{acuerdo}', [AcuerdoController::class, 'borrarAcuerdo']);
 });
 
