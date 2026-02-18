@@ -13,6 +13,8 @@ class MinutaController extends Controller
 {
     public function store(Request $request)
     {
+        $this->authorize('create', MinutaDap::class);
+        
         $request->validate([
             'motivo' => 'required|string',
             'fecha_reunion' => 'required|date',
@@ -81,6 +83,8 @@ class MinutaController extends Controller
     }
 
     public function obtenerMinutas() { //Traer todas las minutas
+        $this->authorize('viewAny', MinutaDap::class);
+
         $minutas = MinutaDap::with('acuerdos:id,minuta_id,description,responsable')
             ->orderBy('folio', 'desc')
             ->get();
@@ -92,6 +96,7 @@ class MinutaController extends Controller
 
     public function obtenerMinutaInd($id) 
     {
+        $this->authorize('viewAny', MinutaDap::class);
         $minuta = MinutaDap::with('acuerdos')->findOrFail($id);
 
         return response()->json([
@@ -101,6 +106,7 @@ class MinutaController extends Controller
 
     public function subirArchivoMinuta(Request $request, MinutaDap $minuta)
     {
+        $this->authorize('update', $minuta);
         $request->validate([
             'evidencia' => 'required|file|max:10240|mimes:pdf,doc,docx,jpg,jpeg,png'
         ]);
@@ -131,6 +137,7 @@ class MinutaController extends Controller
 
     public function actualizarObservacionesMinuta(Request $request, MinutaDap $minuta)
     {
+        $this->authorize('update', $minuta);
         $request->validate([
             'observaciones' => 'required|string'
         ]);
