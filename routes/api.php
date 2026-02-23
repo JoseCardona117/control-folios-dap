@@ -7,7 +7,9 @@ use App\Http\Controllers\Api\FolioController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\MinutaController;
+use App\Http\Controllers\Api\MinutaExternaController;
 use App\Http\Controllers\Api\AcuerdoController;
+use App\Http\Controllers\Api\AcuerdoExternoController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -39,6 +41,15 @@ Route::middleware('auth:sanctum')->group(function(){
 Route::middleware('auth:sanctum')->get('obtenerminutas', [MinutaController::class, 'obtenerMinutas']);
 Route::middleware('auth:sanctum')->get('obtenerminuta/{id}', [MinutaController::class, 'obtenerMinutaInd']);
 
+//Rutas de folios de minutas externas
+Route::middleware('auth:sanctum')->group(function(){
+    Route::post('/creaminutaexterna', [App\Http\Controllers\Api\MinutaExternaController::class, 'store']);
+    Route::post('/minutas_ext/{minuta}/evidencia', [MinutaExternaController::class, 'subirArchivoMinuta']);
+    Route::put('/minutas_ext/{minuta}/observaciones', [MinutaExternaController::class, 'actualizarObservacionesMinuta']);
+});
+Route::middleware('auth:sanctum')->get('obtenerminutasext', [MinutaExternaController::class, 'obtenerMinutas']);
+Route::middleware('auth:sanctum')->get('obtenerminutaext/{id}', [MinutaExternaController::class, 'obtenerMinutaInd']);
+
 //Rutas de acuerdos DAP
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/minutas/{minuta}/acuerdos', [AcuerdoController::class, 'obtenerAcuerdos']);
@@ -47,6 +58,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/acuerdos/{acuerdo}', [AcuerdoController::class, 'obtenerAcuerdoInd']);
     Route::put('/acuerdos/{acuerdo}', [AcuerdoController::class, 'actualizarAcuerdo']);
     Route::delete('/acuerdos/{acuerdo}', [AcuerdoController::class, 'borrarAcuerdo']);
+});
+
+//Rutas de acuerdos externos
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/minutas_ext/{minuta}/acuerdos', [AcuerdoExternoController::class, 'obtenerAcuerdos']);
+    Route::post('/minutas_ext/{minuta}/creaAcuerdo', [AcuerdoExternoController::class, 'store']);
+
+    Route::get('/acuerdos_ext/{acuerdo}', [AcuerdoExternoController::class, 'obtenerAcuerdoInd']);
+    Route::put('/acuerdos_ext/{acuerdo}', [AcuerdoExternoController::class, 'actualizarAcuerdo']);
+    Route::delete('/acuerdos_ext/{acuerdo}', [AcuerdoExternoController::class, 'borrarAcuerdo']);
 });
 
 //Rutas de Usuarios

@@ -11,6 +11,7 @@ class AcuerdoController extends Controller
 {
     public function store(Request $request, MinutaDap $minuta)
     {
+        $this->authorize('create', AcuerdoDap::class);
         $request->validate([
             'description' => 'required|string',
             'responsable' => 'nullable|string',
@@ -35,6 +36,7 @@ class AcuerdoController extends Controller
 
     public function obtenerAcuerdos(MinutaDap $minuta)
     {
+        $this->authorize('viewAny', AcuerdoDap::class);
         return response()->json([
             'acuerdos' => $minuta->acuerdos()->orderBy('id')->get()
         ]);
@@ -42,6 +44,7 @@ class AcuerdoController extends Controller
 
     public function actualizarAcuerdo(Request $request, AcuerdoDap $acuerdo)
     {
+        $this->authorize('update', $acuerdo);
         $request->validate([
             'description' => 'sometimes|string',
             'responsable' => 'sometimes|nullable|string',
@@ -68,6 +71,7 @@ class AcuerdoController extends Controller
 
     public function borrarAcuerdo(AcuerdoDap $acuerdo)
     {
+        $this->authorize('delete', $acuerdo);
         $acuerdo->delete();
 
         return response()->json([

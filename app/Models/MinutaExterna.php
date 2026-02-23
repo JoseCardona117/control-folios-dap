@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MinutaExterna extends Model
 {
+    protected $table = 'minutas_externas';
     protected $fillable = [
         'folio',
         'motivo',
@@ -14,4 +15,9 @@ class MinutaExterna extends Model
         'observaciones',
         'evidencia',
     ];
+
+    public function acuerdos()
+    {
+        return $this->hasMany(AcuerdoExterno::class, 'minuta_id');
+    }
 }
