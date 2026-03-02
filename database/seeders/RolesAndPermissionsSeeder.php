@@ -53,8 +53,8 @@ class RolesAndPermissionsSeeder extends Seeder
             ],
         ];
 
-        foreach($modules as $permission) {
-            foreach($permissionsnas as $permission) {
+        foreach($modules as $permissions) {
+            foreach($permissions as $permission) {
                 Permission::firstOrCreate(['name' => $permission]);
             }
         }
