@@ -15,7 +15,7 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        app()[PermissionRegistrar::class]->forgetCachedPermission();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $modules = [
             'minutas' => [
